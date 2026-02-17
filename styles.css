@@ -1,0 +1,80 @@
+:root {
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  background: radial-gradient(circle at 50% 10%, #eaf7ff 0%, #dbe9ff 45%, #f4f7ff 100%);
+  color: #1f2a44;
+}
+
+#scene {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.hero,
+.scroll-content {
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.hero {
+  height: 100vh;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  text-align: center;
+  text-shadow: 0 1px 8px rgba(255, 255, 255, 0.45);
+  padding: 1rem;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4rem);
+}
+
+.hero p {
+  margin-top: 0.6rem;
+  font-size: clamp(1rem, 2.4vw, 1.2rem);
+}
+
+.scroll-content {
+  display: grid;
+  gap: 20vh;
+  padding: 0 8vw 18vh;
+}
+
+section {
+  min-height: 70vh;
+  max-width: 34rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 1.2rem 1.4rem;
+  border-radius: 1rem;
+  backdrop-filter: blur(6px);
+  background: rgba(255, 255, 255, 0.45);
+  box-shadow: 0 14px 40px rgba(75, 95, 136, 0.14);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+@media (max-width: 700px) {
+  section {
+    min-height: 55vh;
+  }
+}
