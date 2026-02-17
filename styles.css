@@ -78,3 +78,27 @@ h2 {
     min-height: 55vh;
   }
 }
+
+
+.asset-status {
+  position: fixed;
+  left: 50%;
+  bottom: 1rem;
+  transform: translateX(-50%);
+  z-index: 2;
+  pointer-events: none;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.84rem;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 8px 22px rgba(42, 52, 86, 0.15);
+  color: #2f3a5b;
+}
+
+.asset-status[data-tone="ok"] {
+  background: rgba(220, 255, 229, 0.8);
+}
+
+.asset-status[data-tone="warn"] {
+  background: rgba(255, 238, 214, 0.9);
+}

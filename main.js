@@ -53,21 +53,93 @@ let wingL = null;
 let wingR = null;
 const clock = new THREE.Clock();
 
+function ensureStatusNode() {
+  let status = document.getElementById('asset-status');
+  if (!status) {
+    status = document.createElement('p');
+    status.id = 'asset-status';
+    status.className = 'asset-status';
+    document.body.appendChild(status);
+  }
+  return status;
+}
+
+function setStatus(message, tone = 'info') {
+  const status = ensureStatusNode();
+  status.textContent = message;
+  status.dataset.tone = tone;
+}
+
+function createFallbackBee() {
+  const group = new THREE.Group();
+
+  const body = new THREE.Mesh(
+    new THREE.SphereGeometry(0.26, 24, 24),
+    new THREE.MeshStandardMaterial({ color: 0xf6c94f, metalness: 0.05, roughness: 0.45 })
+  );
+  body.scale.set(1.6, 1.05, 1.05);
+  body.castShadow = true;
+  group.add(body);
+
+  const stripeMat = new THREE.MeshStandardMaterial({ color: 0x1e1d1b, roughness: 0.6 });
+  [-0.16, 0.0, 0.16].forEach((z) => {
+    const stripe = new THREE.Mesh(new THREE.TorusGeometry(0.33, 0.045, 10, 40), stripeMat);
+    stripe.rotation.y = Math.PI / 2;
+    stripe.position.z = z;
+    stripe.scale.set(1.0, 0.9, 0.9);
+    stripe.castShadow = true;
+    group.add(stripe);
+  });
+
+  const wingGeo = new THREE.SphereGeometry(0.16, 16, 16);
+  const wingMat = new THREE.MeshPhysicalMaterial({
+    color: 0xdaf6ff,
+    transparent: true,
+    opacity: 0.65,
+    transmission: 0.9,
+    roughness: 0.06,
+    clearcoat: 0.7
+  });
+
+  wingL = new THREE.Mesh(wingGeo, wingMat);
+  wingL.name = 'wing_left';
+  wingL.scale.set(2.4, 0.7, 1.6);
+  wingL.position.set(-0.21, 0.2, 0.03);
+  wingL.castShadow = false;
+  group.add(wingL);
+
+  wingR = wingL.clone();
+  wingR.name = 'wing_right';
+  wingR.position.x = 0.21;
+  group.add(wingR);
+
+  const head = new THREE.Mesh(
+    new THREE.SphereGeometry(0.18, 20, 20),
+    new THREE.MeshStandardMaterial({ color: 0x242325, roughness: 0.45 })
+  );
+  head.position.set(0, 0.04, 0.45);
+  head.castShadow = true;
+  group.add(head);
+
+  group.scale.setScalar(1.15);
+  return group;
+}
+
 const loader = new GLTFLoader();
+setStatus('Chargement de bee.glb…', 'info');
 loader.load(
   './bee.glb',
   (gltf) => {
     bee = gltf.scene;
     bee.scale.setScalar(0.95);
     bee.traverse((obj) => {
-      if (obj.isMesh) {
-        obj.castShadow = true;
-        obj.receiveShadow = true;
+      if (!obj.isMesh) return;
+      obj.castShadow = true;
+      obj.receiveShadow = true;
 
-        const n = obj.name.toLowerCase();
-        if (n.includes('wing_left')) wingL = obj;
-        if (n.includes('wing_right')) wingR = obj;
-      }
+      const n = obj.name.toLowerCase();
+      if (n.includes('wing_left')) wingL = obj;
+      if (n.includes('wing_right')) wingR = obj;
     });
 
     if (gltf.animations.length > 0) {
@@ -76,10 +148,13 @@ loader.load(
     }
 
     scene.add(bee);
+    setStatus('bee.glb chargé.', 'ok');
   },
   undefined,
-  (error) => {
-    console.error('Erreur au chargement de bee.glb :', error);
+  () => {
+    bee = createFallbackBee();
+    scene.add(bee);
+    setStatus('bee.glb introuvable : abeille de secours affichée.', 'warn');
   }
 );
 

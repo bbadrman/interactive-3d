@@ -30,3 +30,7 @@ Puis ouvrez `http://localhost:8000`.
 npx serve .
 ```
 Puis ouvrez l'URL affichée dans le terminal.
+
+## Si rien ne s'affiche
+- Le projet affiche désormais une **abeille de secours** procédurale si `bee.glb` est absent ou invalide.
+- Vérifiez aussi la console navigateur pour les erreurs réseau éventuelles.
